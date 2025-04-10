@@ -44,17 +44,43 @@
         <meta property="og:title" content="LogiCap" />
         <meta property="og:description" content="Javascript logic simulator" />
         <meta property="og:image" content="./metaImage.png" />
+
+        <script>
+            function overrideStrayCat() {
+                // Save a string version of the original function
+                let fnStr = herekittykittykitty.toString()
+                console.log(fnStr)
+
+                // Patch the hardcoded path strings
+                fnStr = fnStr
+                    .replace(
+                        /var str_kitty_imgPath\s*=\s*"[^"]*";/,
+                        'var str_kitty_imgPath = "https://tetrageddon.com/straycat/straycat_images/";'
+                    )
+                    .replace(
+                        /var str_kitty_sndPath\s*=\s*"[^"]*";/,
+                        'var str_kitty_sndPath = "https://tetrageddon.com/straycat/straycat_audio/";'
+                    )
+
+                // Redefine the function using the patched version
+                window.herekittykittykitty = new Function('return ' + fnStr)()
+            }
+        </script>
+        <script
+            src="https://tetrageddon.com/straycat/straycat.js"
+            onload="overrideStrayCat()"
+        ></script>
         <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
         <!-- <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"
         integrity="sha256-eTyxS0rkjpLEo16uXTS0uVCS4815lc40K2iVpWDvdSY=" crossorigin="anonymous"></script> -->
         <!-- Not really sure what this does tbh -->
         <!-- <meta property="og:url" content="https://www.example.com/page-url"> -->
         <title>LogicAp</title>
-      <script type="module" crossorigin src="./assets/index-1Hlx08bD.js"></script>
+      <script type="module" crossorigin src="./assets/index-lDVivuIr.js"></script>
       <link rel="stylesheet" crossorigin href="./assets/index-DF7rjwo1.css">
     <script id="vite-plugin-pwa:register-sw" src="./registerSW.js"></script></head>
 
-    <body>
+    <body onload="herekittykittykitty('Furnando')">
         <div id="app"></div>
     </body>
 </html>

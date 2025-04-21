@@ -49,18 +49,12 @@
             function overrideStrayCat() {
                 // Save a string version of the original function
                 let fnStr = herekittykittykitty.toString()
-                console.log(fnStr)
 
                 // Patch the hardcoded path strings
-                fnStr = fnStr
-                    .replace(
-                        /var str_kitty_imgPath\s*=\s*"[^"]*";/,
-                        'var str_kitty_imgPath = "https://tetrageddon.com/straycat/straycat_images/";'
-                    )
-                    .replace(
-                        /var str_kitty_sndPath\s*=\s*"[^"]*";/,
-                        'var str_kitty_sndPath = "https://tetrageddon.com/straycat/straycat_audio/";'
-                    )
+                fnStr = fnStr.replace(
+                    /var str_kitty_imgPath\s*=\s*"[^"]*";/,
+                    'var str_kitty_imgPath = "https://tetrageddon.com/straycat/straycat_images/";'
+                )
 
                 // Redefine the function using the patched version
                 window.herekittykittykitty = new Function('return ' + fnStr)()
@@ -76,11 +70,11 @@
         <!-- Not really sure what this does tbh -->
         <!-- <meta property="og:url" content="https://www.example.com/page-url"> -->
         <title>LogicAp</title>
-      <script type="module" crossorigin src="./assets/index-CWCAtJ6x.js"></script>
-      <link rel="stylesheet" crossorigin href="./assets/index-DF7rjwo1.css">
+      <script type="module" crossorigin src="./assets/index-B3DFdNSd.js"></script>
+      <link rel="stylesheet" crossorigin href="./assets/index-BsQM8bKD.css">
     <script id="vite-plugin-pwa:register-sw" src="./registerSW.js"></script></head>
 
-    <body onload="herekittykittykitty('Furnando')">
+    <body>
         <div id="app"></div>
     </body>
 </html>

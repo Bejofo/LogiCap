@@ -10,9 +10,11 @@
     } from '@CircuitModel'
     import { rejectMoveClick } from './Util/cursors'
     import { get } from 'svelte/store'
+    import { rotationStore, updateRotation} from './rotationStore.ts'
 
     import { CircuitStore } from '@CircuitStore'
     import { getRunning } from './circuitEngine.svelte'
+
 
     // props that all nodes have in common.
     interface SimNodeProps {
@@ -27,7 +29,6 @@
     // children: Snippet
     // row: Snippet<[T]>
     let { nodeId, gateType, position, nodeProps }: SimNodeProps = $props()
-
     // Separate gateType from the rest of the props
 
     // Create a function to get the component based on type
@@ -35,10 +36,14 @@
     // Use $derived for reactive value
     // do I even need this derived? Nah
     let nodeComponent = $derived(getComponent(gateType))
-    let rotation: number = $state(0)
     const getRotation: () => number = () => {
-        return rotation
+        const rotationMap: Record<string, number> = get(rotationStore)
+        if(rotationMap[nodeId] != null) {
+            return rotationMap[nodeId]
+        }
+        return 0
     }
+    let rotation: number = $state(getRotation())
 
     const nodeAction = (e: MouseEvent) => {
         const clickedEle = e.target as HTMLElement
@@ -54,8 +59,15 @@
             )
         } else {
             rotation = (rotation + 90) % 360
+            const rotationMap: Record<string, number> = get(rotationStore)
+            rotationMap[nodeId] = rotation
+            updateRotation(rotationMap)
+ 
         }
     }
+
+
+
     setContext('rotation', getRotation)
     // #TODO tell the nodes NSEW. when changing direction
     // this solution is better. just need to fine tune it a bit.

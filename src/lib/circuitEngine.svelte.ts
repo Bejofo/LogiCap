@@ -132,9 +132,13 @@ export function onWireChange(wire: any) {
 
 /*
     These are all just wrappers for the baseline updateGate functions
+    These do not work, making this work would require updating the JointJS graph directly
+    If not, no changes will be saved when these are ran
 */
 
 export function updateTick() {
+    return
+    /*
     if (CircuitEngine == null) {
         console.log("Circuit is null")
         return;
@@ -146,9 +150,12 @@ export function updateTick() {
     }
     currEngine.updateGates();
     currentTick = currEngine.tick;
+    */
 }
 
 export function updateNext() {
+    return
+    /*
     if (CircuitEngine == null) {
         console.log("Circuit is null")
         return;
@@ -160,6 +167,7 @@ export function updateNext() {
     }
     currEngine.updateGatesNext();
     currentTick = currEngine.tick;
+    */
 }
 
 

@@ -21,11 +21,13 @@
     import { CircuitStore, loadCircuit, saveCircuit } from '@CircuitStore'
 
     import type { logicGateTypes } from '@CircuitModel'
+    import {getRunning} from '@CircuitEngine'
 
     import SideMenu from '@AppComponents/SideMenu/SideMenu.svelte'
 
     // I could call this 'generic' circuit or something
     import Circuit from './lib/Circuit.svelte'
+    import {loadRotationLS} from  './lib/rotationStore'
     import SimMenu from '@AppComponents/SimMenu.svelte'
     import { fixSvelvetBugs, generateNonce, captureCurrentZoom } from './app'
     import SingleIoLogic from './lib/Circuits/LogicGates/SingleIoLogic.svelte'
@@ -51,6 +53,7 @@
         loadCircuit() // load circuit from LS into CircuitStore,
         currentDevicesData = $CircuitStore.devices
         fixSvelvetBugs() // doesn't have to be on mount could just be in the component scope its the same.
+        loadRotationLS()
 
         // restrictFitViewZoom()
     })
@@ -66,22 +69,25 @@
 
     // called on "drop" in sidemenugroupitem.svelte
     function createCanvasDevice(e: MouseEvent & { gateType: string }) {
-        const gateType: logicGateTypes = e.gateType as logicGateTypes
-        // this gate will update the store and then the subscribe will update the
-        // list of circuits currently active on the screen
+        if(!getRunning())
+        {
+            const gateType: logicGateTypes = e.gateType as logicGateTypes
+            // this gate will update the store and then the subscribe will update the
+            // list of circuits currently active on the screen
 
-        // saves state to local storage on node add.
-        const uuid = generateNonce()
+            // saves state to local storage on node add.
+            const uuid = generateNonce()
 
-        // create new gate on global circuit store on drop
-        const newDeviceList = CircuitStore.addCircuitDevice(
-            gateType,
-            uuid
-        ) as Devices
-        currentDevicesData = newDeviceList
+            // create new gate on global circuit store on drop
+            const newDeviceList = CircuitStore.addCircuitDevice(
+                gateType,
+                uuid
+            ) as Devices
+            currentDevicesData = newDeviceList
 
-        // save on every addition of a new node.
-        saveCircuit()
+            // save on every addition of a new node.
+            saveCircuit()
+        }
     }
     // fitView={true}
 
@@ -90,7 +96,7 @@
 </script>
 
 <main id="logicap">
-    <SettingsMenu />
+    <SettingsMenu clearCanvas={clearDeviceData} setCanvas = {setDevices} />
     <SideMenu {createCanvasDevice} />
     <SimMenu
         clearCanvas={clearDeviceData}

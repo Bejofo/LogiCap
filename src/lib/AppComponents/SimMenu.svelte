@@ -25,6 +25,7 @@
     import TrashIcon from '~icons/material-symbols/delete-outline'
     import ButtonNode from '../Circuits/InputOutputNodes/ButtonNode.svelte'
     import LoadIcon from '~icons/lucide/upload'
+    import { rotationStore, updateRotation } from '../rotationStore.ts'
 
     type Icon = { Component: Component<any>; width: number }
     type IconName = string
@@ -135,9 +136,12 @@
     async function circuitUpload(
         event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
     ) {
-        // if (getRunning()) {
-        //     toggleRunSim()
-        // }
+        localStorage.removeItem('node-rotations')
+        if(getRunning())
+        {
+            toggleRunningClass()
+            toggleSimulation(10)
+        }
         await uploadCircuit()
         setCanvas($CircuitStore.devices)
     }
@@ -146,6 +150,9 @@
         backupDelete()
 
         CircuitStore.reset()
+        const empty: Record<string, number> = {}
+        updateRotation(empty)
+
 
         // clears the currentDevicesData variable in app.svelte
         clearCanvas()

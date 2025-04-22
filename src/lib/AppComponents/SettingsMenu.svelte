@@ -1,6 +1,7 @@
 <!-- I like doing this global store here because of the locality -->
 <script module lang="ts">
     import { writable, type Writable } from 'svelte/store'
+    import {backupDelete, CircuitStore, loadCircuit} from '@CircuitStore'
     export let settingsStore: Writable<any> = writable({
         wireType: 'bezier',
         theme: 'light',
@@ -8,13 +9,55 @@
 </script>
 
 <script>
+    let {
+        clearCanvas,
+        setCanvas,
+    }: { clearCanvas: Function; setCanvas: Function;} =
+    $props()
     import SettingsIcon from '~icons/material-symbols/settings-outline'
     // modal menu that lets you toggle the wire type.
     // change the theme
     // let settingsVisible = false
     let show = $state(false)
     // $inspect($settingsStore).with(console.log)
+    const storedSettings: string | null = localStorage.getItem('logicap-settings')
+    const initialSettings = storedSettings
+    ? JSON.parse(storedSettings)
+    : {
+        wireType: 'bezier',
+        theme: 'light',
+    }
+    settingsStore = writable(initialSettings)
+    let prevSettings = structuredClone(initialSettings)
+    settingsStore.subscribe((newSettings) => {
+        if(newSettings.wireType !== prevSettings.wireType) {
+            deleteAndRestoreCanvas()
+        }
+        localStorage.setItem('logicap-settings', JSON.stringify(newSettings))
+        prevSettings = structuredClone(newSettings)
+    })
 
+    //Done so the wires update on change
+    function deleteAndRestoreCanvas() {
+        backupDelete()
+        
+        CircuitStore.reset()
+
+
+        clearCanvas()
+        let saveDeletedTS: string = ""
+        let saveDeleted: string | null = localStorage.getItem('prevCircuitStore')
+        if (saveDeleted != null)
+        {
+            saveDeletedTS = saveDeleted
+        }
+        loadCircuit(saveDeletedTS)
+        //Small timeout needed
+        setTimeout(() => {
+        setCanvas($CircuitStore.devices)
+        }, 0)
+
+    }
     let hasKitty = $state(false)
 </script>
 
